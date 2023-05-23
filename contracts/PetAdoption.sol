@@ -20,7 +20,7 @@ contract PetAdoption {
   }
 
   function adoptPet(uint adoptIdx) public {
-    require(adoptIdx < petIndex, "Pet index out of bound!");
+    require(adoptIdx < petIndex, "Pet index out of bounds!");
     require(petIdxToOwnerAddress[adoptIdx] == address(0), "Pet is already adopted");
 
     petIdxToOwnerAddress[adoptIdx] = msg.sender;
