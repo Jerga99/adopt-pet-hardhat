@@ -63,6 +63,13 @@ describe("PetAdoption", function() {
 
       await expect(contract.adoptPet(adoptedPetIdx)).to.be.revertedWith("Pet is already adopted");
     });
+
+    it("Should adopt pet succesfuly", async function() {
+      const { contract, account2 } = await loadFixture(deployContractFixture);
+      const idx = 1;
+      await expect(contract.connect(account2).adoptPet(idx)).not.to.be.reverted;
+    });
+
   });
 });
 
