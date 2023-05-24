@@ -66,11 +66,24 @@ describe("PetAdoption", function() {
 
     it("Should adopt pet succesfuly", async function() {
       const { contract, account2 } = await loadFixture(deployContractFixture);
-      const idx = 1;
-      await expect(contract.connect(account2).adoptPet(idx)).not.to.be.reverted;
+      const firstPetIdx = 1;
+      const secondPetIdx = 4
 
-      const petOwnerAddress = await contract.petIdxToOwnerAddress(idx);
+      await expect(contract.connect(account2).adoptPet(firstPetIdx)).not.to.be.reverted;
+      await contract.connect(account2).adoptPet(secondPetIdx);
+
+      const petOwnerAddress = await contract.petIdxToOwnerAddress(firstPetIdx);
       expect(petOwnerAddress).to.equal(account2.address);
+
+      const petsByOwner = await contract.connect(account2).getAllAdoptedPetsByOnwer();
+      const allAdoptedPets = await contract.getAllAdoptedPets();
+
+      expect(petsByOwner.length).to.equal(2);
+      expect(allAdoptedPets.length).to.equal(3);
+
+      expect(await contract.ownerAddressToPetList(account2.address, 0)).to.equal(firstPetIdx);
+      expect(await contract.allAdoptedPets(2)).to.equal(secondPetIdx);
+
     });
   });
 });

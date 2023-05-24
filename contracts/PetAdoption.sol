@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.9;
-import "hardhat/console.sol";
+// import "hardhat/console.sol";
 
 contract PetAdoption {
   address public owner;
@@ -24,20 +24,21 @@ contract PetAdoption {
     require(adoptIdx < petIndex, "Pet index out of bounds!");
     require(petIdxToOwnerAddress[adoptIdx] == address(0), "Pet is already adopted");
 
-    console.log("Adopting pet: ", adoptIdx);
-
     petIdxToOwnerAddress[adoptIdx] = msg.sender;
-
-    console.log("New Owner: ", petIdxToOwnerAddress[adoptIdx]);
-
     ownerAddressToPetList[msg.sender].push(adoptIdx);
     allAdoptedPets.push(adoptIdx);
-
-    console.log("Pet: ", allAdoptedPets[0]);
   }
 
   function getOwner() public view returns(address) {
     return owner;
+  }
+
+  function getAllAdoptedPetsByOnwer() public view returns(uint[] memory) {
+    return ownerAddressToPetList[msg.sender];
+  }
+
+  function getAllAdoptedPets() public view returns(uint[] memory) {
+    return allAdoptedPets;
   }
   
 }
