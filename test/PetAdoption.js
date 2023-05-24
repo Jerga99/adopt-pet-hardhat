@@ -67,12 +67,15 @@ describe("PetAdoption", function() {
     it("Should adopt pet succesfuly", async function() {
       const { contract, account2 } = await loadFixture(deployContractFixture);
       const firstPetIdx = 1;
-      const secondPetIdx = 4
+      const secondPetIdx = 4;
 
       await expect(contract.connect(account2).adoptPet(firstPetIdx)).not.to.be.reverted;
       await contract.connect(account2).adoptPet(secondPetIdx);
 
       const petOwnerAddress = await contract.petIdxToOwnerAddress(firstPetIdx);
+      const zeroAddress = await contract.petIdxToOwnerAddress(100);
+
+      expect(zeroAddress).to.equal("0x0000000000000000000000000000000000000000");
       expect(petOwnerAddress).to.equal(account2.address);
 
       const petsByOwner = await contract.connect(account2).getAllAdoptedPetsByOnwer();
@@ -87,6 +90,7 @@ describe("PetAdoption", function() {
     });
   });
 });
+
 
 
 // npx hardhat test --network localhost
