@@ -22,9 +22,10 @@ function Dapp() {
       <TxError />
       <br />
       <Navbar />
-      {JSON.stringify(pets)}
       <div className="items">
-        <PetItem />
+        { pets.map((pet) =>
+          <PetItem key={pet.id} pet={pet} />
+        )}
       </div>
     </div>
   );
