@@ -20,19 +20,29 @@ function Dapp() {
     fetchPets();
   }, []);
 
+  async function connectWallet() {
+    try {
+      const [address] = await window.ethereum.request({method: "eth_requestAccounts"});
+      setSelectedAddress(address);
+      
+    } catch(e) {
+      console.error(e.message);
+    }
+  }
+
   if (!window.ethereum) {
     return <WalletNotDetected />
   }
 
   if (!selectedAddress) {
-    return <ConnectWallet />
+    return <ConnectWallet connect={connectWallet} />
   }
 
   return (
     <div className="container">
       <TxError />
       <br />
-      <Navbar />
+      <Navbar address={selectedAddress} />
       <div className="items">
         { pets.map((pet) =>
           <PetItem key={pet.id} pet={pet} />
