@@ -6,6 +6,8 @@ import { TxError } from "./components/TxError";
 import { WalletNotDetected } from "./components/WalletNotDetected";
 import { ConnectWallet } from "./components/ConnectWallet";
 
+const HARDHAT_NETWORK_ID = 31337;
+
 function Dapp() {
   const [pets, setPets] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(undefined);
@@ -23,11 +25,23 @@ function Dapp() {
   async function connectWallet() {
     try {
       const [address] = await window.ethereum.request({method: "eth_requestAccounts"});
+
+      await checkNetwork();
+
       setSelectedAddress(address);
       
     } catch(e) {
       console.error(e.message);
     }
+  }
+
+  async function checkNetwork() {
+    if (window.ethereum.networkVersion !== HARDHAT_NETWORK_ID.toString()) {
+      alert("Switching To Hardhat!");
+      return;
+    }
+
+    alert("Correct Network. Don't switch!")
   }
 
   if (!window.ethereum) {
