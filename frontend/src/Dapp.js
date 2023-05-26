@@ -6,7 +6,7 @@ import { TxError } from "./components/TxError";
 import { WalletNotDetected } from "./components/WalletNotDetected";
 import { ConnectWallet } from "./components/ConnectWallet";
 
-const HARDHAT_NETWORK_ID = 31337;
+const HARDHAT_NETWORK_ID = process.env.REACT_APP_NETWORK_ID;
 
 function Dapp() {
   const [pets, setPets] = useState([]);
@@ -36,7 +36,7 @@ function Dapp() {
   }
 
   async function checkNetwork() {
-    if (window.ethereum.networkVersion !== HARDHAT_NETWORK_ID.toString()) {
+    if (window.ethereum.networkVersion !== HARDHAT_NETWORK_ID) {
       alert("Switching To Hardhat!");
       return;
     }
