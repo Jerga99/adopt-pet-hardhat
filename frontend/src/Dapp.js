@@ -27,8 +27,18 @@ function Dapp() {
       const [address] = await window.ethereum.request({method: "eth_requestAccounts"});
 
       await checkNetwork();
-
       setSelectedAddress(address);
+
+      window.ethereum.on("accountsChanged", ([newAddress]) => {
+        if (newAddress === undefined) {
+          setSelectedAddress(undefined);
+          return;
+        }
+        
+        setSelectedAddress(newAddress);
+        // connection to SC
+        // getting owned pets
+      });
       
     } catch(e) {
       console.error(e.message);
