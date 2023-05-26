@@ -6,7 +6,7 @@ import { TxError } from "./components/TxError";
 import { WalletNotDetected } from "./components/WalletNotDetected";
 import { ConnectWallet } from "./components/ConnectWallet";
 
-const HARDHAT_NETWORK_ID = process.env.REACT_APP_NETWORK_ID;
+const HARDHAT_NETWORK_ID = Number(process.env.REACT_APP_NETWORK_ID);
 
 function Dapp() {
   const [pets, setPets] = useState([]);
@@ -35,13 +35,21 @@ function Dapp() {
     }
   }
 
+  async function switchNetwork() {
+    const chainIdHex = `0x${HARDHAT_NETWORK_ID.toString(16)}`;
+    
+    return await window.ethereum.request({
+      method: "wallet_switchEthereumChain",
+      params: [{chainId: chainIdHex}]
+    });
+  }
+
   async function checkNetwork() {
-    if (window.ethereum.networkVersion !== HARDHAT_NETWORK_ID) {
-      alert("Switching To Hardhat!");
-      return;
+    if (window.ethereum.networkVersion !== HARDHAT_NETWORK_ID.toString()) {
+      return switchNetwork();
     }
 
-    alert("Correct Network. Don't switch!")
+    return null;
   }
 
   if (!window.ethereum) {
