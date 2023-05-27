@@ -16,6 +16,7 @@ function Dapp() {
   const [pets, setPets] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(undefined);
   const [contract, setContract] = useState(undefined);
+  const [adoptedPets, setAdoptedPets] = useState([]);
 
   useEffect(() => {
     async function fetchPets() {
@@ -36,7 +37,9 @@ function Dapp() {
 
       window.ethereum.on("accountsChanged", ([newAddress]) => {
         if (newAddress === undefined) {
+          setAdoptedPets([]);
           setSelectedAddress(undefined);
+          setContract(undefined);
           return;
         }
         
@@ -51,20 +54,34 @@ function Dapp() {
   async function initiliazeDapp(address) {
     setSelectedAddress(address);
     const contract = await initContract();
-
-    console.log(contract);
+    getAdoptedPets(contract);
   }
 
   async function initContract() {
     const provider = new ethers.BrowserProvider(window.ethereum);
+    const signer = await provider.getSigner(0);
     const contract = new ethers.Contract(
       contractAddress.PetAdoption,
       PetAdoptionArtifact.abi,
-      await provider.getSigner(0)
+      signer
     );
 
     setContract(contract);
     return contract;
+  }
+
+  async function getAdoptedPets(contract) {
+    try {
+      const adoptedPets = await contract.getAllAdoptedPets();
+
+      if (adoptedPets.length > 0) {
+        setAdoptedPets(adoptedPets.map(petIdx => Number(petIdx)));
+      } else {
+        setAdoptedPets([]);
+      }
+    } catch(e) {
+      console.error(e.message);
+    }
   }
 
   async function switchNetwork() {
@@ -95,6 +112,7 @@ function Dapp() {
   return (
     <div className="container">
       <TxError />
+      {JSON.stringify(adoptedPets)}
       <br />
       <Navbar address={selectedAddress} />
       <div className="items">
