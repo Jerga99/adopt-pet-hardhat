@@ -1,6 +1,7 @@
 
 
 node_modules
+keys.json
 
 # Hardhat files
 cache
