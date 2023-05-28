@@ -20,6 +20,7 @@ function Dapp() {
   const [contract, setContract] = useState(undefined);
   const [txError, setTxError] = useState(undefined);
   const [txInfo, setTxInfo] = useState(undefined);
+  const [view, setView] = useState("home");
 
   useEffect(() => {
     async function fetchPets() {
@@ -45,6 +46,7 @@ function Dapp() {
           setContract(undefined);
           setTxError(undefined);
           setTxInfo(undefined);
+          setView("home");
           return;
         }
         
@@ -148,7 +150,11 @@ function Dapp() {
         />
       }
       <br />
-      <Navbar address={selectedAddress} />
+      {view}
+      <Navbar 
+        setView={setView}
+        address={selectedAddress} 
+      />
       <div className="items">
         { pets.map((pet) =>
           <PetItem 
