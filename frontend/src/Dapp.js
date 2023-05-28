@@ -154,6 +154,7 @@ function Dapp() {
           <PetItem 
             key={pet.id} 
             pet={pet} 
+            inProgress={!!txInfo}
             disabled={adoptedPets.includes(pet.id)}
             adoptPet={() => adoptPet(pet.id)}
           />
