@@ -16,6 +16,7 @@ const HARDHAT_NETWORK_ID = Number(process.env.REACT_APP_NETWORK_ID);
 function Dapp() {
   const [pets, setPets] = useState([]);
   const [adoptedPets, setAdoptedPets] = useState([]);
+  const [ownedPets, setOwnedPets] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(undefined);
   const [contract, setContract] = useState(undefined);
   const [txError, setTxError] = useState(undefined);
@@ -42,6 +43,7 @@ function Dapp() {
       window.ethereum.on("accountsChanged", ([newAddress]) => {
         if (newAddress === undefined) {
           setAdoptedPets([]);
+          setOwnedPets([]);
           setSelectedAddress(undefined);
           setContract(undefined);
           setTxError(undefined);
@@ -104,6 +106,7 @@ function Dapp() {
       }
 
       setAdoptedPets([...adoptedPets, id]);
+      setOwnedPets([...ownedPets, id]);
     } catch(e) {
       setTxError(e?.reason);
     } finally {
@@ -150,21 +153,23 @@ function Dapp() {
         />
       }
       <br />
-      {view}
       <Navbar 
         setView={setView}
         address={selectedAddress} 
       />
       <div className="items">
-        { pets.map((pet) =>
-          <PetItem 
-            key={pet.id} 
-            pet={pet} 
-            inProgress={!!txInfo}
-            disabled={adoptedPets.includes(pet.id)}
-            adoptPet={() => adoptPet(pet.id)}
-          />
-        )}
+        { view === "home" ?
+          pets.map((pet) =>
+            <PetItem 
+              key={pet.id} 
+              pet={pet} 
+              inProgress={!!txInfo}
+              disabled={adoptedPets.includes(pet.id)}
+              adoptPet={() => adoptPet(pet.id)}
+            />
+          ) :
+          JSON.stringify(ownedPets)
+        }
       </div>
     </div>
   );
